@@ -21,7 +21,7 @@ resource functionApp 'Microsoft.Web/sites@2022-03-01' = {
   properties: {
     serverFarmId: appServicePlanId
     httpsOnly: true
-    virtualNetworkSubnetId: subnetId  // Connect to VNet
+    virtualNetworkSubnetId: subnetId // Connect to VNet
     siteConfig: {
       netFrameworkVersion: 'v8.0'
       appSettings: [
@@ -53,7 +53,6 @@ resource functionApp 'Microsoft.Web/sites@2022-03-01' = {
           name: 'AzureWebJobsStorage__tableServiceUri'
           value: 'https://${storageAccountName}.table.${environment().suffixes.storage}'
         }
-        // Use Key Vault Reference for the Client Secret
         {
           name: 'AAD_CLIENT_SECRET'
           value: '@Microsoft.KeyVault(SecretUri=https://${keyVaultName}${environment().suffixes.keyvaultDns}/secrets/aad-client-secret)' // Key Vault reference for the client secret
@@ -103,13 +102,18 @@ resource functionAppAuthSettings 'Microsoft.Web/sites/config@2022-03-01' = {
           allowedAudiences: [
             'api://${clientId}' // Allowed audience for the Function App
           ]
+          defaultAuthorizationPolicy: {
+            allowedApplications: [
+              clientId
+            ]
+          }
         }
       }
     }
-    login: { 
-      tokenStore: { 
-        enabled: true 
-      } 
+    login: {
+      tokenStore: {
+        enabled: true
+      }
     }
   }
 }

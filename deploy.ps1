@@ -104,7 +104,7 @@ function Test-AzureLogin {
         Write-Host "You are not logged in to Microsoft Graph. Please log in."
         $token = (ConvertTo-SecureString -String (Get-AzAccessToken -ResourceTypeName MSGraph).Token -AsPlainText -Force)
         # Connect to Microsoft Graph based on the selected environment
-        Connect-MgGraph -AccessToken $token -Environment $Environment        
+        Connect-MgGraph -AccessToken $token -Environment $Environment -NoWelcome
     } else {
         Write-Host "You are already logged in to Microsoft Graph."
     }
@@ -178,6 +178,7 @@ Update-MgApplication -ApplicationId $appRegistration.Id -Web @{
     ImplicitGrantSettings = @{
         EnableIdTokenIssuance = $true
     }
+    HomePageUrl = "https://$($deployment.Outputs.functionAppDefaultHostName.Value)"
 }
 
 # deploy test function
